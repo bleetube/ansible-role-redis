@@ -1,0 +1,16 @@
+---
+- name: Install redis (Debian)
+  import_tasks: Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Install redis (non-Debian)
+  ansible.builtin.package:
+    name: redis
+    state: present
+  when: ansible_os_family != 'Debian'
+
+- name: Ensure redis is enabled on boot
+  ansible.builtin.service:
+    name: redis-server
+    enabled: true
+    state: started
