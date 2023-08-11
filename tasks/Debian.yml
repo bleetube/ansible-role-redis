@@ -3,17 +3,14 @@
 - name: Add redis apt repository key.
   ansible.builtin.get_url:
     url: "{{ redis_repo_key_url }}"
-    dest: /usr/share/keyrings/redis-archive-keyring.gpg
+    dest: /usr/share/keyrings/redis-archive-keyring.asc
     mode: '0644'
-
-#- name: Quick and dirty way to add redis apt repository key.
-#  ansible.builtin.shell:
-#    cmd: curl -fsSL {{ redis_repo_url }}/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
 
 - name: Ensure the repository is added with the relevant trusted GPG key
   ansible.builtin.lineinfile:
     path: /etc/apt/sources.list.d/redis.list
-    line: "deb [arch=amd64 signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb {{ ansible_distribution_release }} main"
+    regexp: '/packages.redis.io'
+    line: "deb [arch=amd64 signed-by=/usr/share/keyrings/redis-archive-keyring.asc] https://packages.redis.io/deb {{ ansible_distribution_release }} main"
     create: true
   register: redis_repo
 
